@@ -27,7 +27,6 @@ typedef struct {
 
 // Functions --------------------------------------------------------------------------------------------------------------->
 
-
 // Comparison function for qsort to sort strings by length in descending order
 int compareStringsDescending(const void *a, const void *b) {
     const char *str1 = (const char *)a;
@@ -36,7 +35,7 @@ int compareStringsDescending(const void *a, const void *b) {
 }
 
 // Comparison function for qsort to sort strings by length in ascending order
-int compareStringsAscending(const void *a, const void *b) {
+int compareStringsDescending(const void *a, const void *b) {
     const char *str1 = (const char *)a;
     const char *str2 = (const char *)b;
     return strlen(str1) - strlen(str2);
@@ -99,6 +98,21 @@ int placeFirstWord(Placement *p, char board[BOARD_SIZE][BOARD_SIZE]) {
 
     return 1;
 }
+
+// Finds possible locations for the word
+int findWordLocation();
+
+// Trys seeing if the word can be plaaced vertically
+int tryPlaceVertical();
+
+// Trys seeing if the word can be places horizantally
+int tryPlaceHorizantal();
+
+// Checks if the word can be placed (collisions, bounds)
+int canPLaceWord();
+
+// Places the words
+int placeWord();
 
 
 // Main function ------------------------------------------------------------------------------------------------------------>
@@ -232,13 +246,13 @@ int main(int argc, char *argv[]) {
 
 
     // Display the entered words
-    //printf("\nYou entered the following words:\n");
-    /*for (int i = 0; i < count; i++) {
+    printf("\nYou entered the following words:\n");
+    for (int i = 0; i < count; i++) {
         if (outputFile)  // If output file is provided, write there
             fprintf(outputFile, "%s\n", words[i]);
         else              // Otherwise print to console
             printf("%s\n", words[i]);
-    }*/
+    }
 
     // Close files
     if (outputFile != NULL)
