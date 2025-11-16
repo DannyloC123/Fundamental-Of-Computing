@@ -1,4 +1,5 @@
 // Libraries --------------------------------------------------------------------------------------------------------------->
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -6,23 +7,27 @@
 
 
 // Global Variables -------------------------------------------------------------------------------------------------------->
+
 #define MAX_WORDS 20
 #define MAX_WORD_LENGTH 15
 #define BOARD_SIZE 15
 
 
-// Object for word --------------------------------------------------------------------------------------------------------->
+// Object for word placement ------------------------------------------------------------------------------------------------>
+
 typedef struct {
-    int word[MAX_WORD_LENGTH + 1];
-    int len;                            // Length of the word
-    int row;                            // Row the word is in
-    int col;                            // Column the word is in
-    int direction;                      // Direction the word is in (0) for horizantal and (1) for vertical
-    int placed;                         // If the word has been placed (0) for no and (1) for yes
-} word;
+    char word[MAX_WORD_LENGTH + 1];  // actual letters
+    int len;                          // length of word
+    int row;                          // row placed at
+    int col;                          // column placed at
+    int direction;                    // 0 = horizontal, 1 = vertical
+    int placed;                       // 1 if placed, 0 otherwise
+} Placement;
 
 
 // Functions --------------------------------------------------------------------------------------------------------------->
+
+
 // Comparison function for qsort to sort strings by length in descending order
 int compareStringsDescending(const void *a, const void *b) {
     const char *str1 = (const char *)a;
@@ -56,22 +61,21 @@ int isValidWord(const char *word) {
 }
 
 // Initialize the board
-void initBoard(char board[BOARD_SIZE][BOARD_SIZE], char fill){
-    // Initialize the crossword board with dots
-    for (int i = 0; i < 15; i++) {
-        for (int j = 0; j < 15; j++) {
-            board[i][j] = fill;  // fill with dots
+void initBoard(char board[BOARD_SIZE][BOARD_SIZE], char fill) {
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            board[i][j] = fill;
         }
     }
 }
 
 // Prints out board
-int printBoards(char board[BOARD_SIZE][BOARD_SIZE], char *title){
+void printBoards(char board[BOARD_SIZE][BOARD_SIZE], char *title) {
     printf("\n%s Board:\n", title);
     printf("-----------------\n");
-    for (int i = 0; i < MAX_WORD_LENGTH; i++) {
+    for (int i = 0; i < BOARD_SIZE; i++) {
         printf("|");
-        for (int j = 0; j < MAX_WORD_LENGTH; j++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
             printf("%c", board[i][j]);
         }
         printf("|\n");
@@ -80,17 +84,31 @@ int printBoards(char board[BOARD_SIZE][BOARD_SIZE], char *title){
 }
 
 // Places out the first word
-int placeFirstWord(word *p, char board[MAX_WORD_LENGTH][MAX_WORD_LENGTH]){
-    // Starting column
-    
+int placeFirstWord(Placement *p, char board[BOARD_SIZE][BOARD_SIZE]) {
+    p->len = strlen(p->word);
+
+    p->row = BOARD_SIZE / 2;
+    p->col = (BOARD_SIZE - p->len) / 2;
+
+    p->direction = 0;
+    p->placed = 1;
+
+    for (int i = 0; i < p->len; i++) {
+        board[p->row][p->col + i] = p->word[i];
+    }
+
+    return 1;
 }
 
 
-// Main function
+// Main function ------------------------------------------------------------------------------------------------------------>
+
 int main(int argc, char *argv[]) {
-    char word[MAX_WORD_LENGTH];
-    char words[MAX_WORDS][MAX_WORD_LENGTH];
+
+    char word[MAX_WORD_LENGTH + 1];
+    char words[MAX_WORDS][MAX_WORD_LENGTH + 1];
     char board[BOARD_SIZE][BOARD_SIZE];
+    Placement placements[MAX_WORDS];
     int count = 0;
 
     // Open the file containing words
@@ -123,7 +141,6 @@ int main(int argc, char *argv[]) {
     }
     // If a single file is added then read words from the file
     else if (argc == 2) {
-        // Read up to MAX_WORDS words from file (one per line or space-separated)
         inputFile = fopen(argv[1], "r");
         if (inputFile == NULL) {
             printf("Error opening file.\n");
@@ -144,9 +161,7 @@ int main(int argc, char *argv[]) {
         }
     }
     // If two file names are entered, the first will be used to read words from and the second one will be used to display the output on
-    else if (argc == 3)
-    {
-        // Read up to MAX_WORDS words from file (one per line or space-separated)
+    else if (argc == 3) {
         inputFile = fopen(argv[1], "r");
         outputFile = fopen(argv[2], "w");
         if (inputFile == NULL) {
@@ -180,33 +195,52 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // Close any open files safely
+    if (inputFile != NULL)
+        fclose(inputFile);
+
     // Initialize the crossword board with dots
     initBoard(board, '.');
-
-    // Display the Solution Board
-    printBoards(board, 'Solution');
-
-    // Initialize the crossword board with dots
-    initBoard(board, '#');
-
-    // Display the Crossword Puzzle Board
-    printBoards(board, 'Crossword Puzzle');
 
     // Sort words by length in either descending order
     qsort(words, count, sizeof(words[0]), compareStringsDescending);
 
-    // Display the entered words
-    printf("\nYou entered the following words:\n");
+    // Load words into placement array
     for (int i = 0; i < count; i++) {
+        strcpy(placements[i].word, words[i]);
+        placements[i].len = strlen(words[i]);
+        placements[i].placed = 0;
+    }
+
+    // Place the first word on the board
+    placeFirstWord(&placements[0], board);
+
+    // Display the Solution Board
+    printBoards(board, "Solution");
+
+    // Displays the Crossword Puzzle with the letters removed
+
+
+
+
+
+
+
+
+
+
+
+
+    // Display the entered words
+    //printf("\nYou entered the following words:\n");
+    /*for (int i = 0; i < count; i++) {
         if (outputFile)  // If output file is provided, write there
             fprintf(outputFile, "%s\n", words[i]);
         else              // Otherwise print to console
             printf("%s\n", words[i]);
-    }
+    }*/
 
-    // Close any open files safely
-    if (inputFile != NULL)
-        fclose(inputFile);
+    // Close files
     if (outputFile != NULL)
         fclose(outputFile);
 
