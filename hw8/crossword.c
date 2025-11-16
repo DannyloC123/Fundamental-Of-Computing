@@ -13,7 +13,12 @@
 
 // Object for word --------------------------------------------------------------------------------------------------------->
 typedef struct {
-    int word[MAX_WORD_LENGTH]
+    int word[MAX_WORD_LENGTH + 1];
+    int len;                            // Length of the word
+    int row;                            // Row the word is in
+    int col;                            // Column the word is in
+    int direction;                      // Direction the word is in (0) for horizantal and (1) for vertical
+    int placed;                         // If the word has been placed (0) for no and (1) for yes
 } word;
 
 
@@ -74,8 +79,11 @@ int printBoards(char board[BOARD_SIZE][BOARD_SIZE], char *title){
     printf("-----------------\n");
 }
 
-// Prints out the first word
-
+// Places out the first word
+int placeFirstWord(word *p, char board[MAX_WORD_LENGTH][MAX_WORD_LENGTH]){
+    // Starting column
+    
+}
 
 
 // Main function
