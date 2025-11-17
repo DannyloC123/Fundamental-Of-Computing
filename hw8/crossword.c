@@ -100,7 +100,32 @@ int placeFirstWord(Placement *p, char board[BOARD_SIZE][BOARD_SIZE]) {
 }
 
 // Finds possible locations for the word
-int findWordLocation();
+int findWordLocation(Placement *target, Placement placedWords[], int count, char board[BOARD_SIZE][BOARD_SIZE]) 
+{
+    for (int i = 0; i < count; i++) {                               // Loops through every word in the list (count)
+        if (placedWords[i].placed == 0) continue;                   // Checks if the word has been placed already
+        for (int t = 0; t < target->len; t++) {                     // Then loops through every letter in the word that it is currently checking
+            char letterT = target->word[t];                         // Sets each letter as this variable to be easily checked next  
+            for (int p = 0; p < placedWords[i].len; p++) {          // Then it loops through the words that have been already placed
+                char letterP = placedWords[i].word[p];              // Sets each letter as this variabel to be easily checked against the earlier variable letterT
+                if (letterP == letterT) {                           // If the letters match, try placing the word
+                    // If placed word is horizontal, new word must be vertical
+                    if (placedWords[i].direction == 0) {
+                        if (tryPlaceVertical(target, &placedWords[i], t, p, board))
+                            return 1;
+                    }
+                    // If placed word is vertical, new word must be horizontal
+                    if (placedWords[i].direction == 1) {
+                        if (tryPlaceHorizantal(target, &placedWords[i], t, p, board))
+                            return 1;
+                    }
+                }
+            }
+        }
+    }
+    return 0;   // no valid placement found
+}
+
 
 // Trys seeing if the word can be plaaced vertically
 int tryPlaceVertical();
@@ -109,7 +134,7 @@ int tryPlaceVertical();
 int tryPlaceHorizantal();
 
 // Checks if the word can be placed (collisions, bounds)
-int canPLaceWord();
+int canPLaceWord(Placement *p, char board[BOARD_SIZE][BOARD_SIZE]);
 
 // Places the words
 int placeWord();
