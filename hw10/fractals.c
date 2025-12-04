@@ -3,9 +3,15 @@
 
 
 #include "gfx.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 );
-void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 );
+
+void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 );    // Class Code
+void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 );  // Class Code
+void drawSquare(int width, int height, int centerX, int centerY);
+void shrinkingSquares(double x, double y);
+//void spiralSquare();
 
 int main()
 {
@@ -13,14 +19,49 @@ int main()
 
   gfx_open(width, height, "Sierpinski's Triangle");
 
+  int event = gfx_wait();
+
   while(1) {
     gfx_clear();
-    sierpinski(mrgn, mrgn, width-mrgn, mrgn, width/2, height-mrgn);
+
+    if (event == 's') {
+      sierpinski(mrgn, mrgn, width-mrgn, mrgn, width/2, height-mrgn);
+    }
+
+    if (event == 't') {
+      shrinkingSquares(width/2, height/2);
+    }
+
+    if (event == '3') {
+      //spiralSquares();
+      printf("Spiral Squares");
+    }
+
+    if (event == '4') {
+      printf("Circular Lace");
+    }
+
+    if (event == '5') {
+      printf("Snowflake");
+    }
+
+    if (event == '6') {
+      printf("Tree");
+    }
+
+    if (event == '7') {
+      printf("Fern");
+    }
+
+    if (event == '8') {
+      printf("Spiral of Spirals");
+    }
+    
     if ( gfx_wait() == 'q' ) break;
   }
 }
 
-void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 )
+void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 )     // Class Code
 {
   // Base case. 
   if( abs(x2-x1) < 5 ) return;
@@ -34,9 +75,55 @@ void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 )
   sierpinski( (x1+x3)/2, (y1+y3)/2, (x2+x3)/2, (y2+y3)/2, x3, y3 );
 }
 
-void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 )
+void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 )   // Class Code
 {
   gfx_line(x1,y1,x2,y2);
   gfx_line(x2,y2,x3,y3);
   gfx_line(x3,y3,x1,y1);
 }
+
+void drawSquare(int width, int height, int centerX, int centerY){
+  int x1 = centerX - (width/2), y1 = centerY + (height/2);
+  int x2 = centerX + (width/2), y2 = centerY + (height/2);
+  int x3 = centerX + (width/2), y3 = centerY - (height/2);
+  int x4 = centerX - (width/2), y4 = centerY - (height/2);
+
+
+  // draws the square
+  gfx_line(x1, y1, x2, y2);
+  gfx_line(x2, y2, x3, y3);
+  gfx_line(x3, y3, x4, y4);
+  gfx_line(x4, y4, x1, y1);
+}
+
+/*
+void shrinkingSquares(int x, int y){
+  int side = x/2;
+  int h = side/2;            // center of shape
+
+  x = x/2;
+  y = y/2;
+
+  int x1 = x - h, y1 = y - h;
+  int x2 = x + h, y2 = y - h;
+  int x3 = x + h, y3 = y + h;
+  int x4 = x - h, y4 = y + h;
+
+  
+
+  
+
+  if (abs(x2-x1) < 5) return;
+
+  shrinkingSquares(x2, y3)
+}
+*/
+
+
+/*void shrinkingSquares(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int width, int height){
+  int midpointx = width/2;
+  int midpointy = height/2;
+
+
+}
+*/
