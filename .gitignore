@@ -1,0 +1,51 @@
+# ----------------------------------------
+# C COMPILATION ARTIFACTS
+# ----------------------------------------
+*.o
+*.out
+*.exe
+*.obj
+*.gch
+*.a
+*.so
+*.dll
+*.dylib
+
+# Remove macOS debug symbols
+*.dSYM/
+
+# ----------------------------------------
+# BUILD DIRECTORIES (if you ever use them)
+# ----------------------------------------
+build/
+bin/
+out/
+dist/
+cmake-build-*/
+
+# ----------------------------------------
+# EDITORS / IDEs
+# ----------------------------------------
+.vscode/
+.idea/
+*.swp
+
+# ----------------------------------------
+# OS-SPECIFIC JUNK
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----------------------------------------
+# TEMPORARY / BACKUP FILES
+# ----------------------------------------
+*.tmp
+*.log
+*.bak
+*.swp
+
+# ----------------------------------------
+# IGNORE NOTHING INSIDE YOUR HOMEWORK FOLDERS
+# (all your .c and .h files will NOT be ignored)
+# ----------------------------------------
