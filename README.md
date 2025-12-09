@@ -1,4 +1,4 @@
-# Fundamentals of Computing (Fund Comp)
+<img width="796" height="795" alt="{CD93AB04-4E78-4C31-A65D-0B1FAC33D45D}" src="https://github.com/user-attachments/assets/8050e376-c723-4ab8-a84d-00ebb9cfc058" /># Fundamentals of Computing (Fund Comp)
 
 I thought it would be cool to place any interesting projects that I do during this class on this repo.
 
@@ -10,6 +10,8 @@ This project generates eight different recursive fractals using gfx.h and event-
 Each fractal corresponds to keyboard input (1–8), and the window updates instantly based on the key pressed.
 
 Fractals Implemented
+<img width="796" height="795" alt="{CD93AB04-4E78-4C31-A65D-0B1FAC33D45D}" src="https://github.com/user-attachments/assets/19c6ed84-7dde-4cf9-86bd-2f0284327583" />
+
 
 Sierpinski Triangle
 
