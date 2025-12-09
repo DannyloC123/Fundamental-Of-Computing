@@ -20,7 +20,7 @@ Each fractal corresponds to keyboard input (1–8), and the window updates insta
 
 
 
-Spiral Squares
+### Spiral Squares
 <img width="789" height="790" alt="{B13F075B-B90C-4261-84B3-39ACBACBD9B7}" src="https://github.com/user-attachments/assets/b6448843-c007-4aa7-94d9-75a8187c0e2f" />
 
 
