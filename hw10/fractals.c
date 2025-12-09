@@ -9,13 +9,8 @@
 
 void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 );    // Class Code
 void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 );  // Class Code
-<<<<<<< HEAD
-void drawSquare(int width, int height, int centerX, int centerY);
-void shrinkingSquares(double x, double y);
-=======
 void drawSquare(int cx, int cy, int side);
 void shrinkingSquares(int cx, int cy, int side);
->>>>>>> 9cbea9d (Having a little bit of trouble with the shrinking squares fractal so I am just going to pass on it and come back later, but this is the best version I have so far)
 //void spiralSquare();
 
 int main()
@@ -34,11 +29,7 @@ int main()
     }
 
     if (event == 't') {
-<<<<<<< HEAD
-      shrinkingSquares(width/2, height/2);
-=======
       shrinkingSquares(width/2, height/2, 400);
->>>>>>> 9cbea9d (Having a little bit of trouble with the shrinking squares fractal so I am just going to pass on it and come back later, but this is the best version I have so far)
     }
 
     if (event == '3') {
@@ -91,53 +82,6 @@ void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 )   // Class C
   gfx_line(x3,y3,x1,y1);
 }
 
-<<<<<<< HEAD
-void drawSquare(int width, int height, int centerX, int centerY){
-  int x1 = centerX - (width/2), y1 = centerY + (height/2);
-  int x2 = centerX + (width/2), y2 = centerY + (height/2);
-  int x3 = centerX + (width/2), y3 = centerY - (height/2);
-  int x4 = centerX - (width/2), y4 = centerY - (height/2);
-
-
-  // draws the square
-  gfx_line(x1, y1, x2, y2);
-  gfx_line(x2, y2, x3, y3);
-  gfx_line(x3, y3, x4, y4);
-  gfx_line(x4, y4, x1, y1);
-}
-
-/*
-void shrinkingSquares(int x, int y){
-  int side = x/2;
-  int h = side/2;            // center of shape
-
-  x = x/2;
-  y = y/2;
-
-  int x1 = x - h, y1 = y - h;
-  int x2 = x + h, y2 = y - h;
-  int x3 = x + h, y3 = y + h;
-  int x4 = x - h, y4 = y + h;
-
-  
-
-  
-
-  if (abs(x2-x1) < 5) return;
-
-  shrinkingSquares(x2, y3)
-}
-*/
-
-
-/*void shrinkingSquares(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int width, int height){
-  int midpointx = width/2;
-  int midpointy = height/2;
-
-
-}
-*/
-=======
 void drawSquare(int cx, int cy, int side) {
     int h = (side / 2);
 
@@ -163,4 +107,5 @@ void shrinkingSquares(int cx, int cy, int side) {
     shrinkingSquares(cx + half, cy + half, newSide);  // bottom-right
 }
 
->>>>>>> 9cbea9d (Having a little bit of trouble with the shrinking squares fractal so I am just going to pass on it and come back later, but this is the best version I have so far)
+
+
