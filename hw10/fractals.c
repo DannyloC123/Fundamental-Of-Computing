@@ -9,8 +9,13 @@
 
 void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 );    // Class Code
 void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 );  // Class Code
+<<<<<<< HEAD
 void drawSquare(int width, int height, int centerX, int centerY);
 void shrinkingSquares(double x, double y);
+=======
+void drawSquare(int cx, int cy, int side);
+void shrinkingSquares(int cx, int cy, int side);
+>>>>>>> 9cbea9d (Having a little bit of trouble with the shrinking squares fractal so I am just going to pass on it and come back later, but this is the best version I have so far)
 //void spiralSquare();
 
 int main()
@@ -29,7 +34,11 @@ int main()
     }
 
     if (event == 't') {
+<<<<<<< HEAD
       shrinkingSquares(width/2, height/2);
+=======
+      shrinkingSquares(width/2, height/2, 400);
+>>>>>>> 9cbea9d (Having a little bit of trouble with the shrinking squares fractal so I am just going to pass on it and come back later, but this is the best version I have so far)
     }
 
     if (event == '3') {
@@ -82,6 +91,7 @@ void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 )   // Class C
   gfx_line(x3,y3,x1,y1);
 }
 
+<<<<<<< HEAD
 void drawSquare(int width, int height, int centerX, int centerY){
   int x1 = centerX - (width/2), y1 = centerY + (height/2);
   int x2 = centerX + (width/2), y2 = centerY + (height/2);
@@ -127,3 +137,30 @@ void shrinkingSquares(int x, int y){
 
 }
 */
+=======
+void drawSquare(int cx, int cy, int side) {
+    int h = (side / 2);
+
+    gfx_line(cx - h, cy - h,  cx + h, cy - h);
+    gfx_line(cx + h, cy - h,  cx + h, cy + h);
+    gfx_line(cx + h, cy + h,  cx - h, cy + h);
+    gfx_line(cx - h, cy + h,  cx - h, cy - h);
+}
+
+
+void shrinkingSquares(int cx, int cy, int side) {
+    if (side < 5) return;
+
+    drawSquare(cx, cy, side);
+
+    int newSide = side / 3;
+    int half = side / 2;
+
+    // child centers = EXACT parent corners
+    shrinkingSquares(cx - half, cy - half, newSide);  // top-left
+    shrinkingSquares(cx + half, cy - half, newSide);  // top-right
+    shrinkingSquares(cx - half, cy + half, newSide);  // bottom-left
+    shrinkingSquares(cx + half, cy + half, newSide);  // bottom-right
+}
+
+>>>>>>> 9cbea9d (Having a little bit of trouble with the shrinking squares fractal so I am just going to pass on it and come back later, but this is the best version I have so far)
