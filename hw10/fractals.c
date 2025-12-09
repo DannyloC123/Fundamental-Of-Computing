@@ -2,18 +2,21 @@
 // Name: Dannylo Correia
 
 
+// Libraries
 #include "gfx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
+
+// Prototypes
 void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 );    // Class Code
 void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 );  // Class Code
 void drawSquare(int cx, int cy, int side);
 void shrinkingSquares(int cx, int cy, int side);
 void spiralSquares(double center_x, double center_y, double radius, double angle_deg, double size);
 void circularLace(int cx, int cy, int radius);
-
+void snowflake(double x, double y, double radius, int level);
 void tree(int x1, int y1, double angle, double length);
 void fern(int x1, int y1, double angle, double length);
 void spiralOfSpirals(int x, int y, double angle, double size);
@@ -21,53 +24,60 @@ void spiralOfSpirals(int x, int y, double angle, double size);
 
 int main()
 {
-  int width = 850, height = 850, mrgn = 20;
+    int width = 800, height = 800, mrgn = 20;
 
-  gfx_open(width, height, "Fractals");
+    gfx_open(width, height, "Fractals");
 
-  int event = gfx_wait();
+    while (1) {
 
-  while(1) {
-    gfx_clear();
+        gfx_clear();               // Clear the window for the next drawing
+        int event = gfx_wait();    // Wait for a key press each loop
 
-    if (event == '1') {
-      sierpinski(mrgn, mrgn, width-mrgn, mrgn, width/2, height-mrgn);
+        if (event == '1') {
+            // Classic Sierpinski triangle
+            sierpinski(mrgn, mrgn, width-mrgn, mrgn, width/2, height-mrgn);
+        }
+
+        if (event == '2') {
+            // Centered shrinking squares
+            shrinkingSquares(width/2, height/2, 300);
+        }
+
+        if (event == '3') {
+            // Spiral made out of squares
+            spiralSquares(width/2, height/2, 300, 0, 120);
+        }
+
+        if (event == '4') {
+            // Circular lace pattern
+            circularLace(width/2, height/2, 200);
+        }
+
+        if (event == '5') {
+            // Snowflake fractal (circle-based)
+            snowflake(width/2, height/2, 150, 4);
+        }
+
+        if (event == '6') {
+            // Symmetrical branching tree
+            tree(width/2, height - 60, M_PI / 2, 240);
+        }
+
+        if (event == '7') {
+            // Fern fractal with side fronds
+            fern(width/2, height - 50, M_PI/2, 180);
+        }
+
+        if (event == '8') {
+            // Spiral made out of tiny spirals
+            spiralOfSpirals(width/2, height/2, 0, 80);
+        }
+
+        // Quit when 'q' is pressed
+        if (event == 'q') break;
     }
-
-    if (event == '2') {
-      shrinkingSquares(width/2, height/2, 300);
-    }
-
-    if (event == '3') {
-    spiralSquares(width/2, height/2,300, 0, 120);
-    }
-
-    if (event == '4') {
-    circularLace(width/2, height/2, 200);
-  }
-
-    if (event == '5') {
-      printf("Snowflake");
-    }
-
-    if (event == '6') {
-      tree(width/2, height - 60, M_PI / 2, 240);
-    }
-
-    if (event == '7') {
-      fern(width/2, height - 50, M_PI/2, 180);
-    }
-
-    if (event == '8') {
-      int x = width / 2;
-      int y = height / 2;
-      spiralOfSpirals(x, y, 0, 300);
-    }
-
-    
-    if ( gfx_wait() == 'q' ) break;
-  }
 }
+
 
 void sierpinski( int x1, int y1, int x2, int y2, int x3, int y3 )     // Class Code
 {
@@ -91,8 +101,10 @@ void drawTriangle( int x1, int y1, int x2, int y2, int x3, int y3 )   // Class C
 }
 
 void drawSquare(int cx, int cy, int side) {
-    int h = (side / 2);
+    // Compute half the side length so we can draw around the center
+    int h = side / 2;
 
+    // Draw four edges of the square
     gfx_line(cx - h, cy - h,  cx + h, cy - h);
     gfx_line(cx + h, cy - h,  cx + h, cy + h);
     gfx_line(cx + h, cy + h,  cx - h, cy + h);
@@ -100,89 +112,134 @@ void drawSquare(int cx, int cy, int side) {
 }
 
 void shrinkingSquares(int cx, int cy, int side) {
+    // Stop when the square becomes tiny
     if (side < 5) return;
 
+    // Draw the current square
     drawSquare(cx, cy, side);
 
+    // The next squares will be half the size
     int newSide = side / 2;
     int half = side / 2;
 
-    // child centers = EXACT parent corners
-    shrinkingSquares(cx - half, cy - half, newSide);  // top-left
-    shrinkingSquares(cx + half, cy - half, newSide);  // top-right
-    shrinkingSquares(cx - half, cy + half, newSide);  // bottom-left
-    shrinkingSquares(cx + half, cy + half, newSide);  // bottom-right
+    // Recursively draw squares at all 4 corners
+    shrinkingSquares(cx - half, cy - half, newSide); // top-left
+    shrinkingSquares(cx + half, cy - half, newSide); // top-right
+    shrinkingSquares(cx - half, cy + half, newSide); // bottom-left
+    shrinkingSquares(cx + half, cy + half, newSide); // bottom-right
 }
 
 void spiralSquares(double center_x, double center_y, double radius, double angle_deg, double size)
 {
+    // Stop recursion when squares are too small
     if (size < 2) return;
 
+    // Convert angle to radians for cosine/sine
     double angle_rad = angle_deg * M_PI / 180.0;
 
+    // Compute the next square's center along a circular path
     double cx = center_x + radius * cos(angle_rad);
     double cy = center_y + radius * sin(angle_rad);
 
+    // Draw the square at this new position
     drawSquare((int)cx, (int)cy, (int)size);
 
+    // Move inward (smaller radius), rotate, and shrink the square
     spiralSquares(center_x, center_y, radius * 0.9, angle_deg + 40.0, size * 0.9);
 }
 
 void circularLace(int cx, int cy, int radius)
 {
+    // Stop when circles are tiny
     if (radius < 5) return;
 
-    // Draw the main circle
+    // Draw the current circle
     gfx_circle(cx, cy, radius);
 
-    // Place 6 smaller circles evenly around the perimeter
+    // Create six evenly spaced new circles around the edge
     for (int i = 0; i < 6; i++) {
-        double angle = i * M_PI / 3.0;  // 0, 60, 120, 180, 240, 300 degrees
 
+        double angle = i * M_PI / 3.0; // 60° apart
+
+        // Compute the next center location
         int newX = cx + radius * cos(angle);
         int newY = cy + radius * sin(angle);
 
+        // Recursive lace pattern
         circularLace(newX, newY, radius / 3);
     }
 }
 
+void snowflake(double x, double y, double radius, int level)
+{
+    // Base case: draw a final circle
+    if (level == 0) {
+        gfx_circle(x, y, radius);
+        return;
+    }
 
+    // Create six branches around the center
+    for (int i = 0; i < 6; i++) {
+
+        double angle = i * M_PI / 3.0; // 60° increments
+
+        // Make each branch longer than its radius for a snowflake look
+        double branch = radius * 1.5;
+
+        // Compute endpoint of the branch
+        double newX = x + cos(angle) * branch;
+        double newY = y + sin(angle) * branch;
+
+        // Draw main branch
+        gfx_line(x, y, newX, newY);
+
+        // Recur at end of branch
+        snowflake(newX, newY, radius / 3.0, level - 1);
+    }
+}
 
 void tree(int x1, int y1, double angle, double length)
 {
-    if (length < 4) return;   // stop when branch becomes very small
+    // Stop when branch is too small to see
+    if (length < 4) return;
 
-    int x2 = x1 + (int)(length * cos(angle));
-    int y2 = y1 - (int)(length * sin(angle));  
+    // Compute endpoint of this branch
+    double x2 = x1 + length * cos(angle);
+    double y2 = y1 - length * sin(angle); // minus = upward
 
+    // Draw branch
     gfx_line(x1, y1, x2, y2);
 
-    double newLength = length * 0.72;  // perfect scaling for 800×800
-    double delta = M_PI / 6;           // 30 degrees
+    // Shrink the branches for next recursion
+    double newLength = length * 0.72;
 
+    // Angle offset for symmetry (30°)
+    double delta = M_PI / 6;
+
+    // Left and right branches
     tree(x2, y2, angle + delta, newLength);
     tree(x2, y2, angle - delta, newLength);
 }
 
 void fern(int x1, int y1, double angle, double length)
 {
-    if (length < 2) return;   // base case: stop when segments get tiny
+    // Stop when too small
+    if (length < 2) return;
 
-    // Compute endpoint of this segment
+    // Compute new endpoint
     int x2 = x1 + (int)(length * cos(angle));
-    int y2 = y1 - (int)(length * sin(angle));  // negative = upward
+    int y2 = y1 - (int)(length * sin(angle));
 
-    // Draw main segment
+    // Draw main stem segment
     gfx_line(x1, y1, x2, y2);
 
-    // Shrinking factor for next main segment
-    double mainShrink = 0.85;
-    double sideShrink = 0.40;
+    // How much each branch shrinks
+    double mainShrink = 0.85; // main stem
+    double sideShrink = 0.40; // side fronds
 
-    // Side angle (frond deviation)
-    double sideAngle = M_PI / 6;   // 30 degrees
+    double sideAngle = M_PI / 6; // 30° outward bends
 
-    // Continue main stalk
+    // Continue up the main fern stalk
     fern(x2, y2, angle, length * mainShrink);
 
     // Left frond
@@ -194,15 +251,22 @@ void fern(int x1, int y1, double angle, double length)
 
 void spiralOfSpirals(int x, int y, double angle, double size)
 {
-    if (size < 2) return;   
+    // End when points are nearly invisible
+    if (size < 2) return;
 
+    // Convert angle to radians
     double rad = angle * M_PI / 180.0;
 
-    double x2 = x + cos(rad) * (size * 0.5);
-    double y2 = y + sin(rad) * (size * 0.5);
+    // Move forward by an amount equal to the size
+    double x2 = x + cos(rad) * size;
+    double y2 = y + sin(rad) * size;
 
+    // Draw a single dot at the new location
     gfx_point(x2, y2);
 
+    // Main spiral path (slightly shrinking)
     spiralOfSpirals(x2, y2, angle + 30, size * 0.90);
+
+    // Mini-spiral growing off each point
     spiralOfSpirals(x2, y2, angle + 30, size * 0.30);
 }
