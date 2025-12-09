@@ -15,7 +15,7 @@ void shrinkingSquares(int cx, int cy, int side);
 
 int main()
 {
-  int width = 700, height = 700, mrgn = 20;
+  int width = 800, height = 800, mrgn = 20;
 
   gfx_open(width, height, "Sierpinski's Triangle");
 
@@ -29,7 +29,7 @@ int main()
     }
 
     if (event == 't') {
-      shrinkingSquares(width/2, height/2, 400);
+      shrinkingSquares(width/2, height/2, 300);
     }
 
     if (event == '3') {
@@ -91,13 +91,12 @@ void drawSquare(int cx, int cy, int side) {
     gfx_line(cx - h, cy + h,  cx - h, cy - h);
 }
 
-
 void shrinkingSquares(int cx, int cy, int side) {
     if (side < 5) return;
 
     drawSquare(cx, cy, side);
 
-    int newSide = side / 3;
+    int newSide = side / 2;
     int half = side / 2;
 
     // child centers = EXACT parent corners
