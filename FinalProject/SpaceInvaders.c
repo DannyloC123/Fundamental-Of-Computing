@@ -73,6 +73,35 @@ void drawBullet(Bullet b) {
     gfx_fill_rect(b.x, b.y, 4, 10);
 }
 
+
+int rectCollide(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+    return !( x1 + w1 < x2 || x1 > x2 + w2 || y1 + h1 < y2 || y1 > y2 + h2 );
+}
+
+void handleBulletCollision(Bullet *b, Invader inv[INVADER_ROWS][INVADER_COLS]) {
+
+    if (!b->active) return;
+
+    for (int r = 0; r < INVADER_ROWS; r++) {
+        for (int c = 0; c < INVADER_COLS; c++) {
+
+            if (!inv[r][c].alive) continue;
+
+            if (rectCollide(
+                    b->x, b->y, b->width, b->height,
+                    inv[r][c].x, inv[r][c].y, 50, 50)) {
+
+                inv[r][c].alive = 0;
+                b->active = 0;
+                return;
+            }
+        }
+    }
+}
+
+
+
+
 void shoot(Bullet *b, Player *p) {
     b->active = 1;
     b->x = p->x + p->width/2 - 2;
@@ -121,7 +150,7 @@ int main() {
             
             if (c == 'a') {
                 keyLeft = 1;
-                keyRight = 0;
+                keyRight = 0;  // Stop other direction
             }
             else if (c == 'd') {
                 keyRight = 1;
@@ -149,8 +178,12 @@ int main() {
             player.x += PLAYER_SPEED;
         }
 
-        for (int i = 0; i < MAX_BULLET; i++)
-            updateBullet(&bullets[i]);
+        for (int i = 0; i < MAX_BULLET; i++) {
+            if (bullets[i].active) {
+                updateBullet(&bullets[i]);
+                handleBulletCollision(&bullets[i], invaders);
+            }
+        }
 
         usleep(16000);  // ~60 FPS
     }
