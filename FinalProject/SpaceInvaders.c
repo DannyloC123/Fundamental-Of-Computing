@@ -58,17 +58,20 @@ EnemyBullet initEnemyBullet() {
 }
 
 void initInvaders(Invader inv[INVADER_ROWS][INVADER_COLS]) {
-    for (int r = 0; r < INVADER_ROWS; r++)
-        for (int c = 0; c < INVADER_COLS; c++)
+    for (int r = 0; r < INVADER_ROWS; r++) {
+        for (int c = 0; c < INVADER_COLS; c++) {
             inv[r][c] = (Invader){70 + c*90, 50 + r*75, 1};
+        }
+    }
 }
 
 // ----------------------------
 // DRAW HELPERS
 // ----------------------------
 void gfx_fill_rect(int x, int y, int w, int h) {
-    for (int i = 0; i < h; i++)
+    for (int i = 0; i < h; i++) {
         gfx_line(x, y+i, x+w, y+i);
+    }
 }
 
 void drawPlayer(Player p) {
@@ -78,10 +81,13 @@ void drawPlayer(Player p) {
 
 void drawInvaders(Invader inv[INVADER_ROWS][INVADER_COLS]) {
     gfx_color(255, 0, 0);
-    for (int r = 0; r < INVADER_ROWS; r++)
-        for (int c = 0; c < INVADER_COLS; c++)
-            if (inv[r][c].alive)
+    for (int r = 0; r < INVADER_ROWS; r++) {
+        for (int c = 0; c < INVADER_COLS; c++) {
+            if (inv[r][c].alive){
                 gfx_fill_rect(inv[r][c].x, inv[r][c].y, 50, 50);
+            }
+        }
+    }
 }
 
 void drawBullet(Bullet b) {
@@ -99,16 +105,11 @@ void drawEnemyBullet(EnemyBullet b) {
 // ----------------------------
 // COLLISION HELPERS
 // ----------------------------
-int rectCollide(int x1, int y1, int w1, int h1,
-                int x2, int y2, int w2, int h2)
-{
-    return !(x1+w1 < x2 || x1 > x2+w2 ||
-             y1+h1 < y2 || y1 > y2+h2);
+int rectCollide(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+    return !(x1+w1 < x2 || x1 > x2+w2 || y1+h1 < y2 || y1 > y2+h2);
 }
 
-void handleBulletCollision(Bullet *b,
-                           Invader inv[INVADER_ROWS][INVADER_COLS])
-{
+void handleBulletCollision(Bullet *b, Invader inv[INVADER_ROWS][INVADER_COLS]) {
     if (!b->active) return;
 
     for (int r = 0; r < INVADER_ROWS; r++) {
@@ -116,9 +117,8 @@ void handleBulletCollision(Bullet *b,
 
             if (!inv[r][c].alive) continue;
 
-            if (rectCollide(
-                    b->x, b->y, b->width, b->height,
-                    inv[r][c].x, inv[r][c].y, 50, 50))
+            if (rectCollide(b->x, b->y, b->width, b->height,
+                            inv[r][c].x, inv[r][c].y, 50, 50))
             {
                 inv[r][c].alive = 0;
                 b->active = 0;
@@ -163,8 +163,46 @@ void updateBullet(Bullet *b) {
 
 void updateEnemyBullet(EnemyBullet *b) {
     if (!b->active) return;
-    b->y += 7;  // moves downward
+    b->y += 7;
     if (b->y > HEIGHT) b->active = 0;
+}
+
+// ----------------------------
+// DEATH / WIN SCREEN
+// ----------------------------
+void showDeathScreen() {
+    gfx_clear();
+
+    gfx_color(255, 0, 0);
+    gfx_text(WIDTH/2 - 50, HEIGHT/2 - 20, "Game Over");
+
+    gfx_color(255, 255, 255);
+    gfx_text(WIDTH/2 - 70, HEIGHT/2 + 20, "Press R to Restart");
+    gfx_text(WIDTH/2 - 63, HEIGHT/2 + 40, "Press Q to Quit");
+
+    gfx_flush();
+
+    while (1) {
+        if (gfx_event_waiting()) {
+            char key = gfx_wait();
+
+            if (key == 'q' || key == 'Q')
+                exit(0);
+
+            if (key == 'r' || key == 'R')
+                return;
+        }
+        usleep(16000);
+    }
+}
+
+int allInvadersDead(Invader inv[INVADER_ROWS][INVADER_COLS]) {
+    for (int r = 0; r < INVADER_ROWS; r++) {
+        for (int c = 0; c < INVADER_COLS; c++) {
+            if (inv[r][c].alive) return 0;
+        }
+    }
+    return 1;
 }
 
 // ----------------------------
@@ -172,7 +210,6 @@ void updateEnemyBullet(EnemyBullet *b) {
 // ----------------------------
 int main() {
     Player player = initPlayer();
-
     Bullet bullets[MAX_BULLET];
     EnemyBullet enemyBullets[MAX_ENEMY_BULLETS];
 
@@ -191,6 +228,7 @@ int main() {
 
         // ---- DRAW EVERYTHING ----
         gfx_clear();
+
         drawPlayer(player);
         drawInvaders(invaders);
 
@@ -238,10 +276,9 @@ int main() {
         // ---- ENEMY SHOOTING ----
         for (int r = 0; r < INVADER_ROWS; r++) {
             for (int c = 0; c < INVADER_COLS; c++) {
-
                 if (!invaders[r][c].alive) continue;
 
-                if (rand() % 500 == 0) { // controls difficulty
+                if (rand() % 500 == 0) {
                     for (int i = 0; i < MAX_ENEMY_BULLETS; i++) {
                         if (!enemyBullets[i].active) {
                             enemyShoot(&enemyBullets[i], &invaders[r][c]);
@@ -258,13 +295,31 @@ int main() {
                 updateEnemyBullet(&enemyBullets[i]);
 
                 if (checkPlayerHit(&player, &enemyBullets[i])) {
-                    printf("PLAYER HIT! GAME OVER\n");
-                    Running = 0;
+
+                    showDeathScreen();
+
+                    player = initPlayer();
+                    for (int i = 0; i < MAX_BULLET; i++) bullets[i] = initBullet();
+                    for (int i = 0; i < MAX_ENEMY_BULLETS; i++) enemyBullets[i] = initEnemyBullet();
+                    initInvaders(invaders);
+
+                    break;
                 }
             }
         }
 
-        usleep(16000); // 60fps
+        // ---- WIN CONDITION ----
+        if (allInvadersDead(invaders)) {
+
+            showDeathScreen();
+
+            player = initPlayer();
+            for (int i = 0; i < MAX_BULLET; i++) bullets[i] = initBullet();
+            for (int i = 0; i < MAX_ENEMY_BULLETS; i++) enemyBullets[i] = initEnemyBullet();
+            initInvaders(invaders);
+        }
+
+        usleep(16000);
     }
 
     return 0;
