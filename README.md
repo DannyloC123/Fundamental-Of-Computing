@@ -49,3 +49,10 @@ Each fractal corresponds to keyboard input (1–8), and the window updates insta
 
 
 All fractals are drawn recursively, stopping when the scale becomes too small.
+
+
+
+## Final Project - Space Invaders
+
+This project is a simple Space Invaders game written in C for my Fundamentals of Computing final project. The game uses the gfx graphics library to draw the player, enemies, and bullets on the screen. The player can move left and right using the A and D keys and shoot with the space bar. Enemy invaders shoot back at random, and the goal is to destroy all of them without getting hit. If the player is hit by an enemy bullet—or if all invaders are eliminated—the game shows a Game Over screen with the option to restart (R) or quit (Q). The game demonstrates the use of structs, arrays, collision detection, keyboard input handling, and a continuous animation loop. To compile, run gcc -no-pie SpaceInvaders.c gfx.o -lX11 -lm -o SpaceInvaders, then start the game with ./SpaceInvaders. The graphics are simple rectangles, and the game runs smoothly at about 60 frames per second using usleep().
+
